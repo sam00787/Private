@@ -1,0 +1,27 @@
+name: Run AI Ideas Pipeline
+on:
+  schedule:
+    - cron: '0 */12 * * *' # Automated execution every 12 hours
+  workflow_dispatch: # Allows you to manually trigger it anytime via button click
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Libraries
+        run: pip install requests google-genai
+
+      - name: Execute Pipeline
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python pipeline.py
